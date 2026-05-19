@@ -2,16 +2,16 @@
 //  SwiftPokedexApp.swift
 //  SwiftPokedex
 //
-//  Created by Aurélien Wynant on 17.05.26.
-//
 
 import SwiftUI
 
 @main
 struct SwiftPokedexApp: App {
+    private let container = AppContainer()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            PokemonDetailView(viewModel: container.makePokemonDetailViewModel())
         }
     }
 }
