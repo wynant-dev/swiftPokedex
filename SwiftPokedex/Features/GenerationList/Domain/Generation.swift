@@ -5,5 +5,7 @@
 
 struct Generation: Equatable, Identifiable {
     let id: Int
-    let name: String
+    let slug: String
+    let displayName: String
+    let isDisplayNameLocalized: Bool
 }

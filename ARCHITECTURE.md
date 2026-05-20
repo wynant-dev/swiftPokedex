@@ -12,9 +12,10 @@ SwiftPokedex/
 ├── Core/
 │   ├── Networking/               APIClient, APIClientProtocol, APIConfiguration, APIError
 │   ├── Errors/                   UserFacingError
+│   ├── Localization/             LocalizedNameResolver, SlugDisplayNameFormatter, ResourceEnrichment
 │   └── Presentation/             LoadState, LoadTaskRunner
 ├── Data/
-│   ├── Common/                   Shared DTOs (PagedListDTO, NamedResourceDTO)
+│   ├── Common/                   Shared DTOs (PagedListDTO, NamedResourceDTO, LocalizedNameDTO, ResourceURLParser)
 │   └── <Resource>/               Per API resource
 │       ├── DTO/
 │       ├── *Endpoints.swift
@@ -45,7 +46,8 @@ Presentation  →  Domain  ←  Data  →  Core
 - [ ] UI lives under `Features/<Feature>/Presentation/`.
 - [ ] Domain entities and repository **protocols** live under `Features/<Feature>/Domain/` (or shared Domain when used by multiple features).
 - [ ] DTOs, endpoints, mappers, and `Remote*Repository` live under `Data/<Resource>/`.
-- [ ] Shared API list shapes use `Data/Common/` (e.g. `PagedListDTO`, `NamedResourceDTO`).
+- [ ] Shared API list shapes use `Data/Common/` (e.g. `PagedListDTO`, `NamedResourceDTO`, `LocalizedNameDTO`).
+- [ ] Localized display names use `Core/Localization/` — do not duplicate resolver/enrichment logic per feature.
 - [ ] Shared app-wide HTTP config uses `Core/Networking/APIConfiguration` (single `baseURL`); resource paths stay in `Data/*/Endpoints`.
 - [ ] Dependencies respect the inward rule above.
 
@@ -96,7 +98,7 @@ Presentation  →  Domain  ←  Data  →  Core
 
 - [ ] `*Protocol` = contract; `Remote*` = network repository implementation.
 - [ ] Feature/screen: `GenerationList`, `PokemonDetail` (UI + VM + feature protocol names).
-- [ ] API resource folders: `Data/Pokemon/`, `Data/Generations/` (plural resource, not mixed `Generation/` duplicates).
+- [ ] API resource folders: `Data/Pokemon/`, `Data/Generations/` (plural resource; no duplicate `Data/Generation/`).
 - [ ] Methods that return collections: plural (`fetchGenerations()` → `[Generation]`).
 
 ---
@@ -110,8 +112,46 @@ Presentation  →  Domain  ←  Data  →  Core
 | `UserFacingError` | `Core/Errors/` | Map `APIError` (and unknown errors) to UI strings |
 | `APIConfiguration` | `Core/Networking/` | Single API base URL + `url(path:)` |
 | `PagedListDTO` / `NamedResourceDTO` | `Data/Common/` | PokeAPI paginated list responses |
+| `LocalizedNameDTO` | `Data/Common/` | `names[]` entries from detail endpoints |
+| `LocalizedNameResolver` | `Core/Localization/` | Pick display string for device locale |
+| `SlugDisplayNameFormatter` | `Core/Localization/` | Fallback label from API slug before enrichment |
+| `ResourceEnrichment` | `Core/Localization/` | Parallel detail fetch + merge into list summaries |
+| `ResourceURLParser` | `Data/Common/` | Parse numeric id from PokeAPI resource URLs |
 
 Add a feature-specific error type only for real domain/business failures, not for generic HTTP/decode errors.
+
+---
+
+## Localized resources (list + detail enrichment)
+
+PokeAPI list endpoints return only `name` + `url`. Translations live on **detail** responses (`names[]` with `language` + localized `name`).
+
+### Pattern (reuse for every localizable resource)
+
+1. **List fetch** — `GET /<resource>` → `PagedListDTO<NamedResourceDTO>`.
+2. **Summary mapping** — `slug` + `displayName` from `SlugDisplayNameFormatter` + `isDisplayNameLocalized = false`.
+3. **Enrichment** — `ResourceEnrichment.enrich` fetches `GET /<resource>/{id}` in parallel, merges via resource mapper.
+4. **Localized mapping** — `LocalizedNameResolver.displayName(from: detail.names, fallback: summary.displayName)` + `isDisplayNameLocalized = true`.
+
+### Domain model fields
+
+| Field | Purpose |
+|-------|---------|
+| `slug` | Stable API identifier (`generation-i`) |
+| `displayName` | String shown in UI |
+| `isDisplayNameLocalized` | `false` = slug fallback; `true` = resolved from `names[]` |
+
+### Per-resource responsibilities (`Data/<Resource>/`)
+
+| File | Role |
+|------|------|
+| `<Resource>DetailDTO` | Decodes detail JSON including `names: [LocalizedNameDTO]` |
+| `<Resource>Mapper` | `toDomainSummary`, `enriched(from:summary:)` |
+| `Remote*Repository` | List fetch + `ResourceEnrichment` + detail endpoint |
+
+### Performance note
+
+Enrichment runs N detail calls after the list. Acceptable for small lists (e.g. generations). For large lists (e.g. Pokémon), add **cache** in Data later; keep `ResourceEnrichment` and mappers unchanged.
 
 ---
 
@@ -120,8 +160,10 @@ Add a feature-specific error type only for real domain/business failures, not fo
 ```text
 View  →  ViewModel.loadX()  →  LoadTaskRunner
   →  RepositoryProtocol  →  RemoteRepository
-  →  APIClientProtocol  →  PokeAPI
-  →  DTO  →  Mapper  →  Domain model  →  LoadState.loaded
+  →  APIClientProtocol  →  PokeAPI list
+  →  summary DTO  →  Mapper  →  Domain summaries
+  →  ResourceEnrichment  →  detail DTO per item  →  Mapper merge
+  →  LoadState.loaded
 ```
 
 ---

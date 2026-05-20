@@ -8,7 +8,7 @@ import Foundation
 
 final class MockGenerationListRepository: GenerationListRepositoryProtocol {
     var result: Result<[Generation], Error> = .success([
-        Generation(id: 1, name: "Generation I"),
+        Generation(id: 1, slug: "generation-i", displayName: "Generation I", isDisplayNameLocalized: true),
     ])
 
     func fetchGenerations() async throws -> [Generation] {

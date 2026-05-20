@@ -3,7 +3,7 @@
 //  SwiftPokedex
 //
 
-struct NamedResourceDTO: Decodable {
+struct NamedResourceDTO: Decodable, Equatable {
     let name: String
     let url: String
 }

@@ -50,7 +50,7 @@ struct GenerationListView: View {
 
     private func generationList(_ generations: [Generation]) -> some View {
         List(generations) { generation in
-            Text(generation.name)
+            Text(generation.displayName)
         }
     }
 }
@@ -68,8 +68,8 @@ struct GenerationListView: View {
 private final class PreviewGenerationListRepository: GenerationListRepositoryProtocol {
     func fetchGenerations() async throws -> [Generation] {
         [
-            Generation(id: 1, name: "Generation I"),
-            Generation(id: 2, name: "Generation II"),
+            Generation(id: 1, slug: "generation-i", displayName: "Generation I", isDisplayNameLocalized: true),
+            Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true),
         ]
     }
 }

@@ -11,8 +11,8 @@ final class GenerationListViewModelTests: XCTestCase {
     func testLoadGenerationsSuccessSetsLoadedState() async {
         let repository = MockGenerationListRepository()
         repository.result = .success([
-            Generation(id: 1, name: "Generation I"),
-            Generation(id: 2, name: "Generation II"),
+            Generation(id: 1, slug: "generation-i", displayName: "Generation I", isDisplayNameLocalized: true),
+            Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true),
         ])
         let viewModel = GenerationListViewModel(repository: repository)
 
@@ -22,8 +22,8 @@ final class GenerationListViewModelTests: XCTestCase {
         XCTAssertEqual(
             viewModel.state,
             .loaded([
-                Generation(id: 1, name: "Generation I"),
-                Generation(id: 2, name: "Generation II"),
+                Generation(id: 1, slug: "generation-i", displayName: "Generation I", isDisplayNameLocalized: true),
+                Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true),
             ])
         )
     }
