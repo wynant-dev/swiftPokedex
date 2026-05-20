@@ -10,7 +10,7 @@ final class LoadTaskRunner {
     private var task: Task<Void, Never>?
 
     func run<T: Equatable>(
-        decodingContext: String = "data",
+        decodingContext: String,
         getState: @escaping () -> LoadState<T>,
         setState: @escaping (LoadState<T>) -> Void,
         operation: @escaping () async throws -> T

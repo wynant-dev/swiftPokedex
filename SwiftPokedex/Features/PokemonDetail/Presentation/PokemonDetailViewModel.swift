@@ -19,7 +19,7 @@ final class PokemonDetailViewModel: ObservableObject {
 
     func loadPokemon(name: String) {
         loadRunner.run(
-            decodingContext: "Pokémon data",
+            decodingContext: L10n.Error.contextPokemonData,
             getState: { [weak self] in self?.state ?? .idle },
             setState: { [weak self] in self?.state = $0 },
             operation: { [repository] in try await repository.pokemon(named: name) }

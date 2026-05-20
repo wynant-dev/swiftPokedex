@@ -27,6 +27,9 @@ final class PokemonDetailViewModelTests: XCTestCase {
         viewModel.loadPokemon(name: "unknown")
         try? await Task.sleep(nanoseconds: 100_000_000)
 
-        XCTAssertEqual(viewModel.state, .failed("Server error (404)."))
+        guard case let .failed(message) = viewModel.state else {
+            return XCTFail("Expected failed state")
+        }
+        XCTAssertTrue(message.contains("404"))
     }
 }

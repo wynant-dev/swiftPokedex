@@ -19,7 +19,7 @@ final class GenerationListViewModel: ObservableObject {
 
     func loadGenerations() {
         loadRunner.run(
-            decodingContext: "generation data",
+            decodingContext: L10n.Error.contextGenerationData,
             getState: { [weak self] in self?.state ?? .idle },
             setState: { [weak self] in self?.state = $0 },
             operation: { [repository] in try await repository.fetchGenerations() }

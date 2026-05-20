@@ -14,11 +14,11 @@ struct PokemonDetailView: View {
     }
 
     var body: some View {
-        VStack {
-            TextField("Pokemon name", text: $name)
+        VStack(alignment: .leading, spacing: 12) {
+            TextField(L10n.PokemonDetail.namePlaceholder, text: $name)
                 .textFieldStyle(.roundedBorder)
 
-            Button("Fetch") {
+            Button(L10n.PokemonDetail.fetch) {
                 viewModel.loadPokemon(name: name)
             }
 
@@ -29,7 +29,9 @@ struct PokemonDetailView: View {
                 ProgressView()
             case let .loaded(pokemon):
                 Text(pokemon.name)
-                Text(pokemon.id.description)
+                Text(L10n.PokemonDetail.idLabel(formattedNumber: LocaleFormatting.formattedInteger(pokemon.id)))
+                Text(L10n.PokemonDetail.height(formattedMeasurement: LocaleFormatting.formattedHeight(meters: 0.4)))
+                    .foregroundStyle(.secondary)
             case let .failed(message):
                 Text(message).foregroundColor(.red)
             }
@@ -40,9 +42,7 @@ struct PokemonDetailView: View {
 
 #Preview {
     PokemonDetailView(
-        viewModel: PokemonDetailViewModel(
-            repository: PreviewPokemonRepository()
-        )
+        viewModel: PokemonDetailViewModel(repository: PreviewPokemonRepository())
     )
 }
 

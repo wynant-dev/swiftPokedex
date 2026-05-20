@@ -13,6 +13,7 @@ final class LoadTaskRunnerTests: XCTestCase {
         var state: LoadState<Int> = .idle
 
         runner.run(
+            decodingContext: "data",
             getState: { state },
             setState: { state = $0 },
             operation: { 42 }
@@ -27,14 +28,17 @@ final class LoadTaskRunnerTests: XCTestCase {
         var state: LoadState<Int> = .idle
 
         runner.run(
-            decodingContext: "test data",
+            decodingContext: "data",
             getState: { state },
             setState: { state = $0 },
             operation: { throw APIError.httpError(statusCode: 500) }
         )
         try? await Task.sleep(nanoseconds: 50_000_000)
 
-        XCTAssertEqual(state, .failed("Server error (500)."))
+        guard case let .failed(message) = state else {
+            return XCTFail("Expected failed state")
+        }
+        XCTAssertTrue(message.contains("500"))
     }
 
     func testRunFailureKeepsStaleLoadedValue() async {
@@ -42,6 +46,7 @@ final class LoadTaskRunnerTests: XCTestCase {
         var state: LoadState<Int> = .loaded(1)
 
         runner.run(
+            decodingContext: "data",
             getState: { state },
             setState: { state = $0 },
             operation: { throw APIError.httpError(statusCode: 500) }

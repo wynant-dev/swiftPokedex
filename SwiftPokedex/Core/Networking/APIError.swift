@@ -31,14 +31,14 @@ extension APIError {
         self = .transport(error.localizedDescription)
     }
 
-    func userMessage(decodingContext: String = "data") -> String {
+    func userMessage(decodingContext: String) -> String {
         switch self {
         case .invalidURL:
-            "Invalid request."
+            L10n.Error.invalidRequest
         case let .httpError(statusCode):
-            "Server error (\(statusCode))."
+            L10n.Error.http(statusCode: statusCode)
         case .decodingFailed:
-            "Could not read \(decodingContext)."
+            L10n.Error.decodingFailed(context: decodingContext)
         case let .transport(message):
             message
         }

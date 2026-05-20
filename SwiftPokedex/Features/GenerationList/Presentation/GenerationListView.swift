@@ -26,11 +26,11 @@ struct GenerationListView: View {
             case let .failed(message):
                 if viewModel.state.value == nil {
                     ContentUnavailableView {
-                        Label("Could not load generations", systemImage: "exclamationmark.triangle")
+                        Label(L10n.Generations.loadFailedTitle, systemImage: "exclamationmark.triangle")
                     } description: {
                         Text(message)
                     } actions: {
-                        Button("Retry") {
+                        Button(L10n.Generations.retry) {
                             viewModel.loadGenerations()
                         }
                     }
@@ -39,7 +39,7 @@ struct GenerationListView: View {
                 }
             }
         }
-        .navigationTitle("Generations")
+        .navigationTitle(L10n.Generations.title)
         .task {
             viewModel.loadGenerations()
         }
@@ -49,20 +49,25 @@ struct GenerationListView: View {
     }
 
     private func generationList(_ generations: [Generation]) -> some View {
-        List(generations) { generation in
-            Text(generation.displayName)
+        List {
+            Section {
+                ForEach(generations) { generation in
+                    Text(generation.displayName)
+                }
+            } footer: {
+                Text(L10n.Generations.count(generations.count))
+            }
         }
     }
 }
 
-#Preview {
+#Preview("French") {
     NavigationStack {
         GenerationListView(
-            viewModel: GenerationListViewModel(
-                repository: PreviewGenerationListRepository()
-            )
+            viewModel: GenerationListViewModel(repository: PreviewGenerationListRepository())
         )
     }
+    .environment(\.locale, Locale(identifier: "fr"))
 }
 
 private final class PreviewGenerationListRepository: GenerationListRepositoryProtocol {

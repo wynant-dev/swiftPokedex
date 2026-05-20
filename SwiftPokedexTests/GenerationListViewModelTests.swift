@@ -36,6 +36,9 @@ final class GenerationListViewModelTests: XCTestCase {
         viewModel.loadGenerations()
         try? await Task.sleep(nanoseconds: 100_000_000)
 
-        XCTAssertEqual(viewModel.state, .failed("Server error (500)."))
+        guard case let .failed(message) = viewModel.state else {
+            return XCTFail("Expected failed state")
+        }
+        XCTAssertTrue(message.contains("500"))
     }
 }

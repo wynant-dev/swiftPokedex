@@ -12,8 +12,11 @@ SwiftPokedex/
 ├── Core/
 │   ├── Networking/               APIClient, APIClientProtocol, APIConfiguration, APIError
 │   ├── Errors/                   UserFacingError
-│   ├── Localization/             LocalizedNameResolver, SlugDisplayNameFormatter, ResourceEnrichment
+│   ├── Localization/             L10n, LocaleFormatting, API names, ResourceEnrichment
 │   └── Presentation/             LoadState, LoadTaskRunner
+│
+│   Resources/
+│   └── Localizable.xcstrings     App UI strings (en, fr, de)
 ├── Data/
 │   ├── Common/                   Shared DTOs (PagedListDTO, NamedResourceDTO, LocalizedNameDTO, ResourceURLParser)
 │   └── <Resource>/               Per API resource
@@ -93,6 +96,7 @@ Presentation  →  Domain  ←  Data  →  Core
 
 - [ ] Repository and view model tests use mocks — no real network in unit tests.
 - [ ] New repository or non-trivial VM logic includes tests in `SwiftPokedexTests/`.
+- [ ] View model tests avoid asserting exact localized UI copy; use `guard case .failed` or check substrings (e.g. status code).
 
 ### 8. Naming consistency
 
@@ -117,8 +121,29 @@ Presentation  →  Domain  ←  Data  →  Core
 | `SlugDisplayNameFormatter` | `Core/Localization/` | Fallback label from API slug before enrichment |
 | `ResourceEnrichment` | `Core/Localization/` | Parallel detail fetch + merge into list summaries |
 | `ResourceURLParser` | `Data/Common/` | Parse numeric id from PokeAPI resource URLs |
+| `L10n` | `Core/Localization/` | App UI strings from `Localizable.xcstrings` |
+| `LocaleFormatting` | `Core/Localization/` | Locale-aware number and measurement formatting |
 
 Add a feature-specific error type only for real domain/business failures, not for generic HTTP/decode errors.
+
+---
+
+## App UI localization (String Catalog)
+
+Supported languages: **English (default)**, **French**, **German** (`knownRegions`: en, fr, de).
+
+| Piece | Location | Purpose |
+|-------|----------|---------|
+| `Localizable.xcstrings` | `Resources/` | UI copy, plural rules, translations |
+| `L10n` | `Core/Localization/` | Type-safe accessors; uses `Locale.current` internally |
+| `LocaleFormatting` | `Core/Localization/` | Numbers and measurements via `Locale.current` |
+
+### Rules
+
+- **UI strings** → `Localizable.xcstrings` via `L10n` (not hard-coded in views).
+- **PokeAPI `names[]`** → `LocalizedNameResolver` (separate from app UI l10n).
+- **Do not** thread `Locale` through view models or views — device language is picked up automatically.
+- **Tests** assert behavior (e.g. failed state + status code), not exact localized copy — verify translations manually or in UI previews.
 
 ---
 

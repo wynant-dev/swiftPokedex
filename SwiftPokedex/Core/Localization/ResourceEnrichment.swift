@@ -6,7 +6,7 @@
 import Foundation
 
 /// Fetches detail for list summaries in parallel and merges localized fields.
-/// On per-item failure, keeps the summary (fallback display name).
+/// On per-item failure, keeps the summary.
 enum ResourceEnrichment {
     static func enrich<S, D>(
         summaries: [S],
