@@ -19,7 +19,7 @@ final class RemoteGenerationRepositoryTests: XCTestCase {
                         NamedResourceDTO(
                             name: "generation-i",
                             url: "https://pokeapi.co/api/v2/generation/1/"
-                        ),
+                        )
                     ]
                 )
             }
@@ -32,7 +32,7 @@ final class RemoteGenerationRepositoryTests: XCTestCase {
                         LocalizedNameDTO(
                             language: NamedResourceDTO(name: "en", url: "https://pokeapi.co/api/v2/language/9/"),
                             name: "Generation I"
-                        ),
+                        )
                     ]
                 )
             }
@@ -62,7 +62,7 @@ final class RemoteGenerationRepositoryTests: XCTestCase {
                         NamedResourceDTO(
                             name: "generation-i",
                             url: "https://pokeapi.co/api/v2/generation/1/"
-                        ),
+                        )
                     ]
                 )
             }

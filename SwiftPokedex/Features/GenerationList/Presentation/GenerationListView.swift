@@ -74,7 +74,7 @@ private final class PreviewGenerationListRepository: GenerationListRepositoryPro
     func fetchGenerations() async throws -> [Generation] {
         [
             Generation(id: 1, slug: "generation-i", displayName: "Generation I", isDisplayNameLocalized: true),
-            Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true),
+            Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true)
         ]
     }
 }

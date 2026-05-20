@@ -16,7 +16,7 @@ final class LocalizedNameResolverTests: XCTestCase {
             LocalizedNameDTO(
                 language: NamedResourceDTO(name: "en", url: "https://pokeapi.co/api/v2/language/9/"),
                 name: "Generation I"
-            ),
+            )
         ]
 
         let displayName = LocalizedNameResolver.displayName(

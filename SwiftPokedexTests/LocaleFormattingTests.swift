@@ -8,12 +8,12 @@ import XCTest
 
 final class LocaleFormattingTests: XCTestCase {
     func testFormattedIntegerUsesLocaleAwareSeparator() {
-        let us = formattedInteger(1234, locale: Locale(identifier: "en_US"))
-        let fr = formattedInteger(1234, locale: Locale(identifier: "fr_FR"))
+        let usLocale = formattedInteger(1234, locale: Locale(identifier: "en_US"))
+        let frLocale = formattedInteger(1234, locale: Locale(identifier: "fr_FR"))
 
-        XCTAssertEqual(us, "1,234")
-        XCTAssertTrue(fr.contains("234"))
-        XCTAssertNotEqual(us, fr)
+        XCTAssertEqual(usLocale, "1,234")
+        XCTAssertTrue(frLocale.contains("234"))
+        XCTAssertNotEqual(usLocale, frLocale)
     }
 
     func testFormattedHeightProducesNonEmptyValue() {

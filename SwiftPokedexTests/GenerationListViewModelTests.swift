@@ -12,7 +12,7 @@ final class GenerationListViewModelTests: XCTestCase {
         let repository = MockGenerationListRepository()
         repository.result = .success([
             Generation(id: 1, slug: "generation-i", displayName: "Generation I", isDisplayNameLocalized: true),
-            Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true),
+            Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true)
         ])
         let viewModel = GenerationListViewModel(repository: repository)
 
@@ -23,7 +23,7 @@ final class GenerationListViewModelTests: XCTestCase {
             viewModel.state,
             .loaded([
                 Generation(id: 1, slug: "generation-i", displayName: "Generation I", isDisplayNameLocalized: true),
-                Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true),
+                Generation(id: 2, slug: "generation-ii", displayName: "Generation II", isDisplayNameLocalized: true)
             ])
         )
     }
