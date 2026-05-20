@@ -11,7 +11,9 @@ struct SwiftPokedexApp: App {
 
     var body: some Scene {
         WindowGroup {
-            PokemonDetailView(viewModel: container.makePokemonDetailViewModel())
+            NavigationStack {
+                GenerationListView(viewModel: container.makeGenerationListViewModel())
+            }
         }
     }
 }

@@ -37,6 +37,8 @@ This project is not intended for App Store distribution.
 - Dependency Injection
 - Protocol-oriented design
 
+See **[ARCHITECTURE.md](ARCHITECTURE.md)** for layer rules.
+
 ---
 
 ## 🚀 Features

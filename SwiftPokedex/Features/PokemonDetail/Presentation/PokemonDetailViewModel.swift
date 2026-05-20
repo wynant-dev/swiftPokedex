@@ -8,34 +8,21 @@ import Foundation
 
 @MainActor
 final class PokemonDetailViewModel: ObservableObject {
-    @Published var pokemonDetail: PokemonDetail?
-    @Published var isLoading = false
-    @Published var errorMessage: String?
+    @Published var state: LoadState<PokemonDetail> = .idle
 
     private let repository: any PokemonRepositoryProtocol
-    private var loadTask: Task<Void, Never>?
+    private let loadRunner = LoadTaskRunner()
 
     init(repository: any PokemonRepositoryProtocol) {
         self.repository = repository
     }
 
     func loadPokemon(name: String) {
-        loadTask?.cancel()
-        loadTask = Task {
-            isLoading = true
-            errorMessage = nil
-            defer { isLoading = false }
-
-            do {
-                let result = try await repository.pokemon(named: name)
-                guard !Task.isCancelled else { return }
-                pokemonDetail = result
-            } catch is CancellationError {
-                return
-            } catch {
-                guard !Task.isCancelled else { return }
-                errorMessage = PokemonDetailError(underlying: error).userMessage
-            }
-        }
+        loadRunner.run(
+            decodingContext: "Pokémon data",
+            getState: { [weak self] in self?.state ?? .idle },
+            setState: { [weak self] in self?.state = $0 },
+            operation: { [repository] in try await repository.pokemon(named: name) }
+        )
     }
 }

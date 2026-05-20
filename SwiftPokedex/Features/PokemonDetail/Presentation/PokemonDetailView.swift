@@ -22,17 +22,16 @@ struct PokemonDetailView: View {
                 viewModel.loadPokemon(name: name)
             }
 
-            if viewModel.isLoading {
+            switch viewModel.state {
+            case .idle:
+                EmptyView()
+            case .loading:
                 ProgressView()
-            }
-
-            if let pokemon = viewModel.pokemonDetail {
+            case let .loaded(pokemon):
                 Text(pokemon.name)
                 Text(pokemon.id.description)
-            }
-
-            if let error = viewModel.errorMessage {
-                Text(error).foregroundColor(.red)
+            case let .failed(message):
+                Text(message).foregroundColor(.red)
             }
         }
         .padding()

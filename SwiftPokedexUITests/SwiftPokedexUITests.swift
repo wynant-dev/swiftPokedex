@@ -2,8 +2,6 @@
 //  SwiftPokedexUITests.swift
 //  SwiftPokedexUITests
 //
-//  Created by Aurélien Wynant on 17.05.26.
-//
 
 import XCTest
 
