@@ -12,10 +12,10 @@ final class PokemonDetailViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    private let repository: any PokemonRepository
+    private let repository: any PokemonRepositoryProtocol
     private var loadTask: Task<Void, Never>?
 
-    init(repository: any PokemonRepository) {
+    init(repository: any PokemonRepositoryProtocol) {
         self.repository = repository
     }
 
@@ -27,9 +27,9 @@ final class PokemonDetailViewModel: ObservableObject {
             defer { isLoading = false }
 
             do {
-                let detail = try await repository.pokemon(named: name)
+                let result = try await repository.pokemon(named: name)
                 guard !Task.isCancelled else { return }
-                pokemonDetail = detail
+                pokemonDetail = result
             } catch is CancellationError {
                 return
             } catch {

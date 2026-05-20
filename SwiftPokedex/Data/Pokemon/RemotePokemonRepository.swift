@@ -3,7 +3,7 @@
 //  SwiftPokedex
 //
 
-final class RemotePokemonRepository: PokemonRepository {
+final class RemotePokemonRepository: PokemonRepositoryProtocol {
     private let client: any APIClientProtocol
 
     init(client: any APIClientProtocol) {

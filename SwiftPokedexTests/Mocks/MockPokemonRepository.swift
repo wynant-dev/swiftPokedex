@@ -6,7 +6,7 @@
 import Foundation
 @testable import SwiftPokedex
 
-final class MockPokemonRepository: PokemonRepository {
+final class MockPokemonRepository: PokemonRepositoryProtocol {
     var result: Result<PokemonDetail, Error> = .success(PokemonDetail(id: 25, name: "PIKACHU"))
 
     func pokemon(named _: String) async throws -> PokemonDetail {

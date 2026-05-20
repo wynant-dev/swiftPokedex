@@ -7,11 +7,11 @@ import Foundation
 
 final class AppContainer {
     private let apiClient: any APIClientProtocol
-    private let pokemonRepository: any PokemonRepository
+    private let pokemonRepository: any PokemonRepositoryProtocol
 
     init(
         apiClient: any APIClientProtocol = APIClient(),
-        pokemonRepository: (any PokemonRepository)? = nil
+        pokemonRepository: (any PokemonRepositoryProtocol)? = nil
     ) {
         self.apiClient = apiClient
         self.pokemonRepository = pokemonRepository ?? RemotePokemonRepository(client: apiClient)

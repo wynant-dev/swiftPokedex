@@ -1,8 +1,8 @@
 //
-//  PokemonRepository.swift
+//  PokemonRepositoryProtocol.swift
 //  SwiftPokedex
 //
 
-protocol PokemonRepository {
+protocol PokemonRepositoryProtocol {
     func pokemon(named name: String) async throws -> PokemonDetail
 }

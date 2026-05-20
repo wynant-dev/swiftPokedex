@@ -47,7 +47,7 @@ struct PokemonDetailView: View {
     )
 }
 
-private final class PreviewPokemonRepository: PokemonRepository {
+private final class PreviewPokemonRepository: PokemonRepositoryProtocol {
     func pokemon(named name: String) async throws -> PokemonDetail {
         PokemonDetail(id: 25, name: name.uppercased())
     }
