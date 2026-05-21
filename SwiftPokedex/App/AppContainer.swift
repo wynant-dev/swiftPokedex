@@ -16,7 +16,9 @@ final class AppContainer {
         generationListRepository: (any GenerationListRepositoryProtocol)? = nil
     ) {
         self.apiClient = apiClient
-        self.pokemonRepository = pokemonRepository ?? RemotePokemonRepository(client: apiClient)
+
+        self.pokemonRepository = pokemonRepository
+            ?? RemotePokemonRepository(client: apiClient)
         self.generationListRepository = generationListRepository
             ?? RemoteGenerationRepository(client: apiClient)
     }

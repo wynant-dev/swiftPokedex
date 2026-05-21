@@ -12,6 +12,7 @@ SwiftPokedex/
 ├── Core/
 │   ├── Networking/               APIClient, APIClientProtocol, APIConfiguration, APIError
 │   ├── Errors/                   UserFacingError
+│   ├── Logging/                  AppLog (debug-only)
 │   ├── Localization/             L10n, LocaleFormatting, API names, ResourceEnrichment
 │   └── Presentation/             LoadState, LoadTaskRunner
 │
@@ -123,8 +124,7 @@ Presentation  →  Domain  ←  Data  →  Core
 | `ResourceURLParser` | `Data/Common/` | Parse numeric id from PokeAPI resource URLs |
 | `L10n` | `Core/Localization/` | App UI strings from `Localizable.xcstrings` |
 | `LocaleFormatting` | `Core/Localization/` | Locale-aware number and measurement formatting |
-
-Add a feature-specific error type only for real domain/business failures, not for generic HTTP/decode errors.
+| `AppLog` | `Core/Logging/` | Debug-only `os.Logger` helpers (not user-facing) |
 
 ---
 
@@ -142,8 +142,6 @@ Supported languages: **English (default)**, **French**, **German** (`knownRegion
 
 - **UI strings** → `Localizable.xcstrings` via `L10n` (not hard-coded in views).
 - **PokeAPI `names[]`** → `LocalizedNameResolver` (separate from app UI l10n).
-- **Do not** thread `Locale` through view models or views — device language is picked up automatically.
-- **Tests** assert behavior (e.g. failed state + status code), not exact localized copy — verify translations manually or in UI previews.
 
 ---
 
